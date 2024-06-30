@@ -14,6 +14,7 @@ import med.voll.api.domain.usuario.Usuario;
 
 @Service
 public class TokenService {
+    // inviroment variable
     @Value("${api.security.token.secret}")
     private String secret;
 
@@ -28,6 +29,17 @@ public class TokenService {
 
         } catch (Exception e) {
             throw new RuntimeException("erro ao gerar token jwt " + e);
+        }
+    }
+
+    public String getSubject(String tokenJWT) {
+        try {
+            var algoritmo = Algorithm.HMAC256(secret);
+            var verifier = JWT.require(algoritmo).build();
+            var jwt = verifier.verify(tokenJWT);
+            return jwt.getSubject();
+        } catch (Exception e) {
+            throw new RuntimeException("erro ao verificar token jwt " + e);
         }
     }
 
